@@ -1,0 +1,1 @@
+const databaseURL = "mongodb+srv://cop4331:62t9VFsPcmOqOAKb@cluster0.lamyt.mongodb.net/cop4331?retryWrites=true&w=majority&appName=Cluster0"
