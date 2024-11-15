@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import searchIcon from '/home/bitnami/stack/projects/movies/frontend/src/assets/icons/search.png'; // Import the image
 
 function CardUI() {
     let _ud: any = localStorage.getItem('user_data');
@@ -81,11 +82,26 @@ function CardUI() {
     return (
         <div id="cardUIDiv">
             <br />
-            Search: <input type="text" id="searchText" placeholder="Card To Search For"
+            <input id="searchBar" type="text" placeholder="Search Movies.."
                 onChange={handleSearchTextChange} />
-            <button type="button" id="searchCardButton" className="buttons"
-                onClick={searchCard}> Search Card</button><br />
+            <button id="searchButton" onClick={searchCard}><img id = "searchIcon" src={searchIcon}/></button><br />
             <span id="cardSearchResult">{searchResults}</span>
+            
+            <div id="container">
+                <div className="section" id="watched">
+                    <h2>Watched</h2>
+                    
+                </div>
+
+                <div className="section" id="wantToWatch">
+                    <h2>Want to Watch</h2>
+                   
+                </div>
+            </div>
+            
+            
+            
+            
             <p id="cardList">{cardList}</p><br /><br />
             Add: <input type="text" id="cardText" placeholder="Card To Add"
                 onChange={handleCardTextChange} />

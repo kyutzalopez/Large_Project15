@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Volkhov&display=swap');
-
+/*<a href="https://www.flaticon.com/free-icons/ecommerce" title="ecommerce icons">Ecommerce icons created by brajaomar_j - Flaticon</a>*/
 :root {
   font-family: 'Volkhov', serif;
   line-height: 1.5;
@@ -17,6 +17,64 @@
 #title {
   font-size: 48px;
   color:white;
+}
+
+#collectionTitle {
+  font-size: 40px;
+  color: white;
+  position: absolute;
+  top: 10px;    /* Distance from the top of the popUpDiv */
+  left: 50px;  /* Distance from the right of the popUpDiv */
+}
+
+.section {
+  position: absolute;
+  left: 50px;
+  font-size: 25px;
+}
+
+#watched {
+  top: 150px;
+}
+
+#wantToWatch {
+  top: 500px;
+}
+
+#searchBar {
+  border-radius: 30px;
+  border: none;
+  position: absolute;
+  top: 20px;    /* Distance from the top of the popUpDiv */
+  right: 50px;  /* Distance from the right of the popUpDiv */
+  padding-left: 20px;
+  font-family: 'Volkhov', serif;
+  font-size: 25px;
+  color: white;
+  background-color: #585656;
+  width: 400px; /* Set a fixed width for the search bar */
+  height: 45px; /* Set a fixed height for the search bar */
+  box-sizing: border-box; /* Ensures padding doesn't affect the width/height */
+
+}
+
+#searchButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+#searchIcon {
+  position: absolute;
+  top: 30px;    /* Distance from the top of the popUpDiv */
+  right: 70px;  /* Distance from the right of the popUpDiv */
+  width:24px;
+  height:24px;
+  background-color: transparent;
+  background: transparent;
+  display: block; /* Prevents inline spacing issues */
+  
 }
 
 #subText {

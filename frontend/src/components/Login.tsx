@@ -21,7 +21,7 @@ function Login({ closePopup, handleSignUpClick }: { closePopup: () => void; hand
                 setMessage('User/Password combination incorrect');
             }
             else {
-                var user = { firstName: res.firstName, lastName: res.lastName, id: res.id }
+                var user = { firstName: res.firstName, lastName: res.lastName, id: res.id , email: res.email, username: res.username}
                 localStorage.setItem('user_data', JSON.stringify(user));
 
                 setMessage('');
