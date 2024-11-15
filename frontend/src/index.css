@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Volkhov&display=swap');
+
+:root {
+  font-family: 'Volkhov', serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+#title {
+  font-size: 48px;
+  color:white;
+}
+
+#subText {
+  color:white;
+}
+
+#homeButtons {
+  padding: 10px 20px;
+  padding-left: 60px;
+  padding-right: 60px;
+  margin-bottom: 15px;
+  border-radius: 30px;
+  background: linear-gradient(270deg, #601d1d, #bc271d);
+  color: white;
+  cursor: pointer;
+  font-size: 25px;
+  border: 1px solid transparent;
+}
+
+#popUpOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent dark overlay */
+  backdrop-filter: blur(8px); /* Background blur effect */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999; /* Ensure overlay is on top */
+}
+
+#popUpDiv {
+  position: relative; /* Ensure it's the reference for the absolute positioning */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #111111;
+  padding: 40px;
+  border-radius: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  color: white;
+  text-align: center;
+  width: 300px;
+}
+
+#closeButton {
+  position: absolute;
+  top: 10px;    /* Distance from the top of the popUpDiv */
+  right: 10px;  /* Distance from the right of the popUpDiv */
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 17px;
+  font-family: sans-serif;
+  cursor: pointer;
+}
+
+#closeButton:hover {
+  color: red;  /* Optional: Change color on hover */
+}
+
+#inner-title {
+  font-size: 25px;
+  margin-bottom: 20px;
+}
+
+#loginName,
+#loginPassword {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: #1b1a1a;
+  color: white;
+  max-width: 400px;
+}
+
+#input-field{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 5%;
+  margin-bottom: 30%;
+}
+
+#loginResult {
+  font-size: 14px;
+  text-align: center;
+  margin-top: 10px; /* Space between the password input and the error message */
+  width: 100%;
+  word-wrap: break-word; /* Ensure long text is wrapped */
+}
+
+#homeDiv a[id="subLogin"] {
+  cursor: pointer;
+  text-decoration: underline;
+  color:white;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #000000, #1e1e1e);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+
+
+@media (max-width: 600px) {
+  #popUpDiv {
+    padding: 20px; /* Less padding on smaller screens */
+    width: 90%; /* Allow the popup to take more space on small screens */
+  }
+
+  #loginName,
+  #loginPassword {
+    font-size: 16px; /* Adjust font size for smaller screens */
+  }
+
+  #loginResult {
+    font-size: 12px; /* Make the error message text a bit smaller on mobile */
+  }
+}
