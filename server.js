@@ -36,8 +36,9 @@ app.use((req, res, next) => {
     next();
 });
 
-/*app.post('/api/createUser', async (req, res, next) => {
-      // incoming: userId, color
+//old version
+/*app.post('/api/signup', async (req, res, next) => {
+      // incoming: login, email, password  
       // outgoing: error
       const { login, password, email } = req.body;
       const newUser= {Username:login, Password:password, Email:email, };
@@ -52,6 +53,35 @@ app.use((req, res, next) => {
         error = e.toString();
       }
       cardList.push( card );
+      var ret = { error: error };
+      res.status(200).json(ret);
+});*/
+
+//new version
+/*app.post('/api/signup', async (req, res, next) => {
+      // incoming: email, login, password, repassword
+      // outgoing: error
+      const { email, login, password, repassword } = req.body;
+      const newUser= {Email:email, Username:login, Password:password, UserId:id };
+      const results = password === repassword;
+
+      var error = 'Passwords do not match';
+
+
+      if(result)
+      {    
+        try 
+        {
+            const db = client.db();
+            const result = db.collection('Users').insertOne(newUser);
+            error = '';
+        }
+        catch (e) 
+        {
+        error = e.toString();
+        }
+      }
+      Users.push(login);
       var ret = { error: error };
       res.status(200).json(ret);
 });*/
