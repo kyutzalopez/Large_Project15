@@ -5,7 +5,10 @@ const app = express();
 app.use(express.json());
 
 const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb+srv://cop4331:yo5aybgnWmubYS65@cluster0.lamyt.mongodb.net/cop4331?retryWrites=true&w=majority&appName=Cluster0';
+
+require('dotenv').config(); // "npm install dotenv" in project root directory for line below to work
+const url = process.env.MONGODB_URL; // protected database url
+
 const client = new MongoClient(url);
 client.connect();
 
@@ -36,11 +39,12 @@ app.use((req, res, next) => {
     next();
 });
 
-/*app.post('/api/createUser', async (req, res, next) => {
-      // incoming: userId, color
+//old version
+/*app.post('/api/signup', async (req, res, next) => {
+      // incoming: login, email, password  
       // outgoing: error
       const { login, password, email } = req.body;
-      const newUser= {Username:login, Password:password, Email:email, };
+      const newUser= {Username:login, Password:password, Email:email };
       var error = '';
       try
       {
@@ -56,7 +60,46 @@ app.use((req, res, next) => {
       res.status(200).json(ret);
 });*/
 
-app.post('/api/addcard', async (req, res, next) => {
+//new version
+app.post('/api/signup', async (req, res, next) => {
+      // incoming: email, login, password, repassword
+      // outgoing: error
+      const { email, login, password, repassword } = req.body;
+      const newUser= {Email:email, Username:login, Password:password, UserId:"0" };
+      const passMatch = (password === repassword);
+      
+      var id = -1;
+      var e ='';
+      var username = '';
+      var error = 'Passwords do not match';
+
+      if (passMatch) {    
+        try {
+            const db = client.db();
+            const results = await db.collection('Users').insertOne(newUser);
+            const id = results.insertedId;
+    
+            // Return a single JSON response
+            res.status(200).json({
+                id: id,            // The user's unique ID
+                e: newUser.Email,
+                username: newUser.Username,
+                error: '',         // No error
+            });
+        } catch (e) {
+            // Handle any errors that occur during the database operation
+            const error = e.toString();
+            res.status(500).json({ error }); // Send an error response
+        }
+    }
+
+      Users.push(login);
+      var ret = { id: id,  email: e, username: username, error: error};
+     
+      res.status(200).json(ret);
+});
+
+/*app.post('/api/addcard', async (req, res, next) => {
     // incoming: userId, color
     // outgoing: error
 
@@ -76,6 +119,99 @@ app.post('/api/addcard', async (req, res, next) => {
     cardList.push(card);
 
     var ret = { error: error };
+    res.status(200).json(ret);
+});
+*/
+//add movie title to list of movies user has WATCHED
+app.post('/api/addmovieWatched', async (req, res, next) => {
+    // incoming: userId, title, review, rating
+    // outgoing: error
+      const { userId, title, review, rating } = req.body;
+  
+      const newMovie = { Title: title, UserId: userId, Review: review, Rating: rating };
+      var error = '';
+  
+      try {
+          const db = client.db();
+          const result = db.collection('WatchedMovies').insertOne(newMovie);
+      }
+      catch (e) {
+          error = e.toString();
+      }
+  
+      var ret = { error: error };
+      res.status(200).json(ret);
+  });
+
+//add title to list of movies user WILL WATCH
+app.post('/api/addmovieWatchlist', async (req, res, next) => {
+    // incoming: userId, title
+    // outgoing: error
+
+    const { userId, title, review, rating } = req.body;
+
+    const newMovie = { Title: title, UserId: userId, Review: review, Rating: rating };
+    var error = '';
+
+    try {
+        const db = client.db();
+        const result = db.collection('Watchlist').insertOne(newMovie);
+    }
+    catch (e) {
+        error = e.toString();
+    }
+
+    var ret = { error: error };
+    res.status(200).json(ret);
+});
+
+//search watchlist and return movies with partial matching
+app.post('/api/searchWatchlist', async (req, res, next) => {
+    // incoming: userId, search
+    // outgoing: results[], error
+    var error = '';
+    const { userId, search } = req.body;
+    var _search = search.trim();
+    const db = client.db();
+    const results = await db.collection('Watchlist').find({ Title: { $regex: _search + '.*' }, UserId: userId }).toArray();
+    var _ret = [];
+    for (var i = 0; i < results.length; i++) {
+        _ret.push(results[i].Title);
+    }
+    var ret = { results: _ret, error: error };
+    res.status(200).json(ret);
+});
+
+//search watched movies and return movies with partial matching
+app.post('/api/searchWatched', async (req, res, next) => {
+    // incoming: userId, search
+    // outgoing: results[], error
+    var error = '';
+    const { userId, search } = req.body;
+    var _search = search.trim();
+    const db = client.db();
+    const results = await db.collection('WatchedMovies').find({ Title: { $regex: _search + '.*' }, UserId: userId }).toArray();
+    var _ret = [];
+    for (var i = 0; i < results.length; i++) {
+        _ret.push(results[i].Title);
+    }
+    var ret = { results: _ret, error: error };
+    res.status(200).json(ret);
+});
+
+app.post('/api/searchcards', async (req, res, next) => {
+    // incoming: userId, search
+    // outgoing: results[], error
+    var error = '';
+    const { userId, search } = req.body;
+    var _search = search.trim();
+    const db = client.db();
+    const results = await db.collection('Cards').find({ "Card": { $regex: _search + '.*' } }).toArray();
+    var _ret = [];
+    for (var i = 0; i < results.length; i++) {
+        _ret.push(results[i].Card);
+    }
+    var ret = { results: _ret, error: error };
     res.status(200).json(ret);
 });
 
@@ -104,22 +240,6 @@ app.post('/api/login', async (req, res, next) => {
     }
 
     var ret = { id: id,  email: e, username: username, error};
-    res.status(200).json(ret);
-});
-
-app.post('/api/searchcards', async (req, res, next) => {
-    // incoming: userId, search
-    // outgoing: results[], error
-    var error = '';
-    const { userId, search } = req.body;
-    var _search = search.trim();
-    const db = client.db();
-    const results = await db.collection('Cards').find({ "Card": { $regex: _search + '.*' } }).toArray();
-    var _ret = [];
-    for (var i = 0; i < results.length; i++) {
-        _ret.push(results[i].Card);
-    }
-    var ret = { results: _ret, error: error };
     res.status(200).json(ret);
 });
 

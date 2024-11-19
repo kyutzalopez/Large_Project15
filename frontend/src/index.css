@@ -145,7 +145,11 @@
 }
 
 #loginName,
-#loginPassword {
+#loginPassword, 
+#signUpEmail, 
+#signUpLogin, 
+#signUpPassword,
+#signUpRepassword {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
@@ -164,7 +168,7 @@
   margin-bottom: 30%;
 }
 
-#loginResult {
+#loginResult, #signUpResult {
   font-size: 14px;
   text-align: center;
   margin-top: 10px; /* Space between the password input and the error message */

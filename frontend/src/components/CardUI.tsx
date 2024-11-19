@@ -13,7 +13,11 @@ function CardUI() {
     const [cardList, setCardList] = useState('');
     const [search, setSearchValue] = React.useState('');
     const [card, setCardNameValue] = React.useState('');
+    const [watchedTitle, setWatchedTitle] = React.useState('');
+    const [watchedReview, setWatchedReview] = React.useState('');
+    const [watchedRating, setWatchedRating] = React.useState('');
 
+    // needs to be addmovieWatchlist and addmovieWatched function to work w new js functions
     async function addCard(e: any): Promise<void> {
         e.preventDefault();
         let obj = { userId: userId, card: card };
@@ -40,13 +44,41 @@ function CardUI() {
             setMessage(error.toString());
         }
     };
+
+    async function addWatchedMovie(e: any): Promise<void> {
+        e.preventDefault();
+        let obj = { userId: userId, title: watchedTitle, review: watchedReview, rating: watchedRating };
+        let js = JSON.stringify(obj);
+        try {
+            const response = await
+                fetch('https://www.cop4331gerber.online/api/addmovieWatched',
+                    {
+                        method: 'POST', body: js, headers: {
+                            'Content-Type':
+                                'application/json'
+                        }
+                    });
+            let txt = await response.text();
+            let res = JSON.parse(txt);
+            if (res.error.length > 0) {
+                setMessage("API Error:" + res.error);
+            }
+            else {
+                setMessage('Movie review has been added');
+            }
+        }
+        catch (error: any) {
+            setMessage(error.toString());
+        }
+    };
+
     async function searchCard(e: any): Promise<void> {
         e.preventDefault();
         let obj = { userId: userId, search: search };
         let js = JSON.stringify(obj);
         try {
             const response = await
-                fetch('https://www.cop4331gerber.online/api/searchcards',
+                fetch('https://www.cop4331gerber.online/api/searchWatched',
                     {
                         method: 'POST', body: js, headers: {
                             'Content-Type':
@@ -79,10 +111,22 @@ function CardUI() {
         setCardNameValue(e.target.value);
     }
 
+    function handleWatchedTitleChange(e: any): void {
+        setWatchedTitle(e.target.value);
+    }
+
+    function handleWatchedReview(e: any): void {
+        setWatchedReview(e.target.value);
+    }
+
+    function handleWatchedRating(e: any): void {
+        setWatchedRating(e.target.value);
+    }
+
     return (
         <div id="cardUIDiv">
             <br />
-            <input id="searchBar" type="text" placeholder="Search Movies.."
+            <input id="searchBar" type="text" placeholder="Search Your Reviews.."
                 onChange={handleSearchTextChange} />
             <button id="searchButton" onClick={searchCard}><img id = "searchIcon" src={searchIcon}/></button><br />
             <span id="cardSearchResult">{searchResults}</span>
@@ -100,14 +144,21 @@ function CardUI() {
             </div>
             
             
-            
-            
             <p id="cardList">{cardList}</p><br /><br />
-            Add: <input type="text" id="cardText" placeholder="Card To Add"
-                onChange={handleCardTextChange} />
-            <button type="button" id="addCardButton" className="buttons"
-                onClick={addCard}> Add Card </button><br />
-            <span id="cardAddResult">{message}</span>
+            
+            <h2>Add Your Review</h2>
+
+            <input type="text" id="watchedTitle" placeholder="Movie Title"
+                onChange={handleWatchedTitleChange} /><br />
+            <input type="text" id="watchedReview" placeholder="Movie Review"
+                onChange={handleWatchedReview} /><br />
+            <input type="number" step="1" min="0" max="5" id="watchedRating" placeholder="Movie Rating"
+                onChange={handleWatchedRating} /><br />
+            
+            <button type="button" id="addMovieButton" className="buttons"
+                onClick={addWatchedMovie}> Add Movie Review </button><br />
+            <span id="movieAddResult">{message}</span>
+
         </div>
     );
 }
