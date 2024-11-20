@@ -16,7 +16,7 @@ client.connect();
 client.connect()
     .then(() => {
         console.log('Successfully connected to MongoDB');
-        app.listen(5001, () => {
+        app.listen(5000, () => {
             console.log("Server running at http://localhost:5000");
         });
     })
@@ -93,7 +93,7 @@ app.post('/api/signup', async (req, res, next) => {
         }
     }
 
-      Users.push(login);
+      //Users.push(login);
       var ret = { id: id,  email: e, username: username, error: error};
      
       res.status(200).json(ret);
@@ -243,4 +243,4 @@ app.post('/api/login', async (req, res, next) => {
     res.status(200).json(ret);
 });
 
-app.listen(5000); // start Node + Express server on port 5000
+//app.listen(5000); // start Node + Express server on port 5000
