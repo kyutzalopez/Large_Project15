@@ -91,12 +91,13 @@ app.post('/api/signup', async (req, res, next) => {
             const error = e.toString();
             res.status(500).json({ error }); // Send an error response
         }
-    }
+    }else{
 
       //Users.push(login);
       var ret = { id: id,  email: e, username: username, error: error};
      
       res.status(200).json(ret);
+    }
 });
 
 /*app.post('/api/addcard', async (req, res, next) => {
