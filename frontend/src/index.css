@@ -14,67 +14,39 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #000000, #1e1e1e);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+h2 {
+  font-size: 24px;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
 #title {
   font-size: 48px;
   color:white;
-}
-
-#collectionTitle {
-  font-size: 40px;
-  color: white;
-  position: absolute;
-  top: 10px;    /* Distance from the top of the popUpDiv */
-  left: 50px;  /* Distance from the right of the popUpDiv */
-}
-
-.section {
-  position: absolute;
-  left: 50px;
-  font-size: 25px;
-}
-
-#watched {
-  top: 150px;
-}
-
-#wantToWatch {
-  top: 500px;
-}
-
-#searchBar {
-  border-radius: 30px;
-  border: none;
-  position: absolute;
-  top: 20px;    /* Distance from the top of the popUpDiv */
-  right: 50px;  /* Distance from the right of the popUpDiv */
-  padding-left: 20px;
-  font-family: 'Volkhov', serif;
-  font-size: 25px;
-  color: white;
-  background-color: #585656;
-  width: 400px; /* Set a fixed width for the search bar */
-  height: 45px; /* Set a fixed height for the search bar */
-  box-sizing: border-box; /* Ensures padding doesn't affect the width/height */
-
-}
-
-#searchButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
-
-#searchIcon {
-  position: absolute;
-  top: 30px;    /* Distance from the top of the popUpDiv */
-  right: 70px;  /* Distance from the right of the popUpDiv */
-  width:24px;
-  height:24px;
-  background-color: transparent;
-  background: transparent;
-  display: block; /* Prevents inline spacing issues */
-  
 }
 
 #subText {
@@ -182,46 +154,377 @@
   color:white;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-  background: linear-gradient(180deg, #000000, #1e1e1e);
+#collectionTitle {
+  font-size: 30px;
+  color: white;
+  position: absolute;
+  top: 20px;    /* Distance from the top of the popUpDiv */
+  left: 50px;  /* Distance from the right of the popUpDiv */
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.section {
+  position: absolute;
+  left: 50px;
+  font-size: 25px;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: white;
+#watched {
+  top: 150px;
+}
+
+#wantToWatch {
+  top: 500px;
+}
+
+#searchBar {
+  border-radius: 30px;
+  border: none;
+  position: absolute;
+  top: 20px;    
+  right: 120px;  /* Adjusted to make room for logout button */
+  padding-left: 20px;
+  font-family: 'Volkhov', serif;
+  font-size: 14px;
+  color: white;
+  background-color: #585656;
+  width: 220px;
+  height: 38px;
+  box-sizing: border-box;
+}
+
+#searchButton {
+  background: none;
+  border: none;
   cursor: pointer;
-  transition: border-color 0.25s;
+  padding: 0;
+}
+
+#searchIcon {
+  position: absolute;
+  top: 30px;    
+  right: 140px;  /* Adjusted to align with search bar */
+  width: 17px;
+  height: 17px;
+  background-color: transparent;
+  background: transparent;
+  display: block;
+}
+
+#logoutButton {
+  font-size: 14px;
+  padding: 5px 15px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: absolute;
+  top: 20px;     
+  right: 20px;   
+  z-index: 1000;  
+}
+
+#logoutButton:hover {
+    transform: scale(1.05);
+}
+
+#addMovieButton {
+  font-size: 24px; /* Larger font size */
+  padding: 20px 40px; /* Bigger padding for a more prominent button */
+  color: white; /* Text color */
+  border-radius: 12px; /* Slightly rounded corners */
+  border: none; /* Remove default border */
+  cursor: pointer; /* Change cursor to indicate clickable */
+  transition: all 0.3s ease; /* Smooth transition on hover */
+}
+
+#addMovieButton:hover {
+  transform: scale(1.05); /* Slightly enlarge button */
 }
 
 
-
-@media (max-width: 600px) {
+/* 4K and Larger Screens */
+@media (min-width: 2560px) { 
   #popUpDiv {
-    padding: 20px; /* Less padding on smaller screens */
-    width: 90%; /* Allow the popup to take more space on small screens */
+    padding: 60px; /* Increase padding for a spacious look */
+    width: 900px; /* Make the popup larger */
+  }
+
+  #title, #collectionTitle {
+    font-size: 80px; /* Bigger titles for better visibility */
   }
 
   #loginName,
-  #loginPassword {
-    font-size: 16px; /* Adjust font size for smaller screens */
+  #loginPassword, 
+  #signUpEmail, 
+  #signUpLogin, 
+  #signUpPassword, 
+  #signUpRepassword {
+    width: 100%; /* Allow inputs to take full width */
+    font-size: 20px; /* Larger font size for better readability */
+    padding: 15px; /* More padding inside the inputs */
+    border-radius: 25px; /* Proportional border radius */
   }
 
-  #loginResult {
-    font-size: 12px; /* Make the error message text a bit smaller on mobile */
+  #homeButtons {
+    font-size: 30px; /* Larger button font */
+    padding: 15px 28px; /* Bigger buttons for click targets */
+    padding-left: 60px;
+    padding-right: 60px;
+  }
+
+  #loginResult, #signUpResult {
+    font-size: 38px; /* Slightly larger message text */
+  }
+
+  #subText {
+    font-size: 28px;
+  }
+
+  h1 {
+    font-size: 5em; /* Bigger titles for the homepage */
+  }
+
+   /* Dashboard Sections */
+  #watched {
+    top: 400px; /* Move down on the page for larger screens */
+    font-size: 28px; /* Larger font for better readability */
+  }
+
+  #wantToWatch {
+    top: 1200px; /* Adjust spacing between sections */
+    font-size: 28px; /* Larger font for better readability */
+  }
+
+  .section {
+    left: 100px; /* Offset the sections further for larger screens */
+  }
+
+  #searchBar {
+    font-size: 38px; /* Larger search bar text */
+    width: 600px; /* Wider search bar */
+    height: 89px; /* Taller search bar */
+    top: 20px;    
+    right: 260px;  /* Adjusted to make room for logout button */
+    border-radius: 60px;
+  }
+
+  #searchIcon {
+    top: 45px;
+    right: 300px;  /* Adjusted to align with search bar */
+    width: 35px; /* Bigger icon */
+    height: 35px;
+  }
+
+  /* Logout Button */
+  #logoutButton {
+    font-size: 38px;
+    padding: 20px 40px;
+    top: 20px;       
+    right: 20px;     
+  }
+
+  #logoutButton:hover {
+      transform: scale(1.05);
+  }
+
+  h2 {
+    font-size: 48px;
+  }
+
+  #cardUiDiv p {
+    font-size: 20px; /* Increase paragraph font size */
+    line-height: 1.8; /* Adjust line height for readability */
+  }
+
+  /* Add Movie Button */
+  #addMovieButton {
+    font-size: 24px; /* Larger font size */
+    padding: 20px 40px; /* Bigger padding for a more prominent button */
+    color: white; /* Text color */
+    border-radius: 12px; /* Slightly rounded corners */
+    border: none; /* Remove default border */
+    cursor: pointer; /* Change cursor to indicate clickable */
+    transition: all 0.3s ease; /* Smooth transition on hover */
+  }
+
+  #addMovieButton:hover {
+    transform: scale(1.05); /* Slightly enlarge button */
   }
 }
+
+/* Average Desktop Screens */
+@media (min-width: 1200px) and (max-width: 2559px) { 
+  #popUpDiv {
+    width: 500px; /* Wider popup for large screens */
+    padding: 60px; /* More padding for better spacing */
+  }
+
+  #title, #collectionTitle {
+    font-size: 48px; /* Larger titles on large desktops */
+  }
+
+  #loginName,
+  #loginPassword, 
+  #signUpEmail, 
+  #signUpLogin, 
+  #signUpPassword, 
+  #signUpRepassword {
+    font-size: 20px; /* Bigger input font for better readability */
+  }
+
+  #loginResult, #signUpResult {
+    font-size: 18px; /* Smaller text for results or messages */
+  }
+
+  #subText {
+    font-size: 24px;
+  }
+
+  /* Dashboard Sections */
+  #watched {
+    top: 200px; /* Move down on the page for larger screens */
+    font-size: 28px; /* Larger font for better readability */
+  }
+
+  #wantToWatch {
+    top: 800px; /* Adjust spacing between sections */
+    font-size: 28px; /* Larger font for better readability */
+  }
+
+  #searchBar {
+    font-size: 22px; /* Larger search bar text */
+    width: 340px; /* Wider search bar */
+    height: 61px; /* Taller search bar */
+    top: 20px;    
+    right: 180px;  /* Adjusted to make room for logout button */
+    border-radius: 60px;
+  }
+
+  #searchIcon {
+    top: 40px;
+    right: 205px;  /* Adjusted to align with search bar */
+    width: 20px; /* Bigger icon */
+    height: 20px;
+  }
+
+  /* Logout Button */
+  #logoutButton {
+    font-size: 24px;
+    padding: 10px 20px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    top: 20px;  
+    right: 20px;     
+  }
+
+  #logoutButton:hover {
+      transform: scale(1.05);
+  }
+
+  h2 {
+    font-size: 48px;
+  }
+
+  #cardUiDiv p {
+    font-size: 20px; /* Increase paragraph font size */
+    line-height: 1.8; /* Adjust line height for readability */
+  }
+
+  /* Add Movie Button */
+  #addMovieButton {
+    font-size: 24px; /* Larger font size */
+    padding: 20px 40px; /* Bigger padding for a more prominent button */
+  }
+}
+
+/* Mobile Screens */
+@media (max-width: 600px) { 
+  #popUpDiv {
+    padding: 10px; /* Reduce padding for a smaller popup */
+    width: 80%; /* Shrink popup width */
+  }
+
+  #title, #collectionTitle {
+    font-size: 24px; /* Adjust title size for smaller popup */
+  }
+
+  #loginName,
+  #loginPassword, 
+  #signUpEmail, 
+  #signUpLogin, 
+  #signUpPassword, 
+  #signUpRepassword {
+    width: 90%; /* Reduce width to fit smaller popups */
+    font-size: 14px; /* Smaller font for input fields */
+    padding: 8px; /* Less padding inside the inputs */
+    border-radius: 15px; /* Adjust border radius for proportional rounding */
+  }
+
+  #loginResult, #signUpResult {
+    font-size: 12px; /* Smaller text for results or messages */
+  }
+
+  #homeButtons {
+    font-size: 18px; /* Smaller button font */
+    padding: 8px 16px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  /* Dashboard Sections */
+  h2 {
+    font-size: 24px;
+  }
+
+  #watched {
+    top: 150px; 
+  }
+
+  #wantToWatch {
+    top: 500px; 
+  }
+
+  #searchBar {
+    font-size: 14px; 
+    width: 250px; 
+    height: 33px; 
+    top: 65px;
+    left: 50%;  /* Center horizontally */
+    transform: translateX(-50%); /* Adjust to perfectly center */
+  }
+
+  #searchIcon {
+    top: 82px;
+    left: 73%;
+    position: absolute; /* Position relative to the search bar */
+    transform: translateY(-50%); /* Center the icon vertically */
+    width: 15px;
+    height: 15px;
+  }
+
+  /* Logout Button */
+  #logoutButton {
+    font-size: 10px;
+    padding: 2px 9px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    top: 20px;       
+    right: 20px;     
+
+  }
+
+  #cardUiDiv p {
+    font-size: 20px; 
+    line-height: 1.8; 
+  }
+
+  /* Add Movie Button */
+  #addMovieButton {
+    font-size: 24px; 
+    padding: 20px 40px; 
+  }
+}
+
