@@ -71,9 +71,7 @@ function SignUp({ closePopup, handleLoginClick }: { closePopup: () => void; hand
                 
                 <input type="submit" id="homeButtons" className="buttons" value="Sign Up"
                     onClick={doSignUp} />
-                <span id="subText">
-                    Have an Account? 
-                    <a id="subLogin" onClick={() => {closePopup(); handleLoginClick(); }}> Log in</a> {/* "Log in" triggers Login pop-up */}
+                <span id="subText">Have an Account? <a id="subLogin" onClick={() => {closePopup(); handleLoginClick(); }}>Log in</a> {/* "Log in" triggers Login pop-up */}
                 </span>
             </div>
         </div>

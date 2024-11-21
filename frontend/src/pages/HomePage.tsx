@@ -31,9 +31,7 @@ const LoginPage = () => {
             <PageTitle />
             
             <button id="homeButtons" onClick={handleSignUpClick}>Sign Up </button><br/>
-            <span id="subText">
-                Existing User?
-                <a id="subLogin" onClick={handleLoginClick}>Log in</a>
+            <span id="subText">Existing User? <a id="subLogin" onClick={handleLoginClick}>Log in</a>
             </span>
 
             {isSignUpVisible && <SignUp closePopup={() => setIsSignUpVisible(false)} handleLoginClick={handleLoginClick} />}
