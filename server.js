@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const bcrypt = require('bcrypt');     //"npm instal bcrypt" in root
+const fs = require('fs'); //file system
 const app = express();
 app.use(express.json());
 
@@ -85,6 +86,7 @@ app.post('/api/signup', async (req, res, next) => {
 
             //Test Logs
             console.log(hashedPassword)
+            fs.appendFile(log.txt, hashedPassword + '');
             console.log(results)
     
             // Return a single JSON response
