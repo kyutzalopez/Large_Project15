@@ -88,7 +88,7 @@ app.post('/api/signup', async (req, res, next) => {
 
             //Test Logs
             console.log(hashedPassword)
-            fs.appendFile(logFilePath, hashedPassword + '');
+            fs.appendFile(logFilePath, hashedPassword + '', (err) => {});
             console.log(results)
     
             // Return a single JSON response
