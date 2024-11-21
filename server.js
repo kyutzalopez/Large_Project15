@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const bcrypt = require('bcrypt');     //"npm instal bcrypt" in root
 const app = express();
 app.use(express.json());
 
@@ -63,9 +64,9 @@ app.use((req, res, next) => {
 //new version
 app.post('/api/signup', async (req, res, next) => {
       // incoming: email, login, password, repassword
-      // outgoing: error
+      // outgoing: id, email, username, error
       const { email, login, password, repassword } = req.body;
-      const newUser= {Email:email, Username:login, Password:password, UserId:"0" };
+      //const newUser= {Email:email, Username:login, Password:password, UserId:"0" }; !!!!!!!
       const passMatch = (password === repassword);
       
       var id = -1;
@@ -75,14 +76,21 @@ app.post('/api/signup', async (req, res, next) => {
 
       if (passMatch) {    
         try {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const newUser= {Email:email, Username:login, Password:hashedPassword, UserId:"0" };
+            
             const db = client.db();
             const results = await db.collection('Users').insertOne(newUser);
             const id = results.insertedId;
+
+            //Test Logs
+            console.log(hashedPassword)
+            console.log(results)
     
             // Return a single JSON response
             res.status(200).json({
                 id: id,            // The user's unique ID
-                e: newUser.Email,
+                email: newUser.Email,
                 username: newUser.Username,
                 error: '',         // No error
             });
@@ -92,10 +100,8 @@ app.post('/api/signup', async (req, res, next) => {
             res.status(500).json({ error }); // Send an error response
         }
     }else{
-
-      //Users.push(login);
-      var ret = { id: id,  email: e, username: username, error: error};
-     
+      //Passwords do not match      
+      var ret = { id: id,  email: e, username: username, error: error};     
       res.status(200).json(ret);
     }
 });
@@ -103,12 +109,9 @@ app.post('/api/signup', async (req, res, next) => {
 /*app.post('/api/addcard', async (req, res, next) => {
     // incoming: userId, color
     // outgoing: error
-
     const { userId, card } = req.body;
-
     const newCard = { Card: card, UserId: userId };
     var error = '';
-
     try {
         const db = client.db();
         const result = db.collection('Cards').insertOne(newCard);
@@ -116,13 +119,13 @@ app.post('/api/signup', async (req, res, next) => {
     catch (e) {
         error = e.toString();
     }
-
     cardList.push(card);
-
     var ret = { error: error };
     res.status(200).json(ret);
 });
 */
+
+
 //add movie title to list of movies user has WATCHED
 app.post('/api/addmovieWatched', async (req, res, next) => {
     // incoming: userId, title, review, rating
