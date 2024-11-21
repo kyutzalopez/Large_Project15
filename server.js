@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt');     //"npm instal bcrypt" in root
 const app = express();
 app.use(express.json());
 
+cause Error -;
+
 const MongoClient = require('mongodb').MongoClient;
 
 require('dotenv').config(); // "npm install dotenv" in project root directory for line below to work
