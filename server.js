@@ -101,7 +101,7 @@ app.post('/api/signup', async (req, res, next) => {
                 //Test Logs
                 //console.log(hashedPassword)
                 fs.appendFile(logFilePath, 'Sign up, Pass: ' + hashedPassword + '\n', (err) => {});
-                fs.appendFile(logFilePath, id + ' - ' + results.login + '\n\n', (err) => {});
+                fs.appendFile(logFilePath, id + ' - ' + results.Username + '\n\n', (err) => {});
     
                 // Return a single JSON response
                 res.status(200).json({
@@ -259,7 +259,7 @@ app.post('/api/login', async (req, res, next) => {
 
         var storedPassword = results[0].Password;
         if(await bcrypt.compare(password, storedPassword)){
-            id = results[0].UserId;
+            id = results[0].insertedId;
             e = results[0].Email;
             username = results[0].Username;
             error = '';
