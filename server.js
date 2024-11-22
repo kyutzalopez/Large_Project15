@@ -79,25 +79,39 @@ app.post('/api/signup', async (req, res, next) => {
 
       if (passMatch) {    
         try {
-            const hashedPassword = await bcrypt.hash(password, 10);
-            const newUser= {Email:email, Username:login, Password:hashedPassword, UserId:"0" };
-            
             const db = client.db();
-            const results = await db.collection('Users').insertOne(newUser);
-            const id = results.insertedId;
+            const loginMatched = await db.collection('Users').find({ Username: login}).toArray();
+            if(loginMatched.length > 0) {
 
-            //Test Logs
-            //console.log(hashedPassword)
-            fs.appendFile(logFilePath, hashedPassword + '\n', (err) => {});
-            fs.appendFile(logFilePath, results + '\n', (err) => {});
+                // Return JSON Error: Account already exists
+                res.status(418).json({
+                    id: id,
+                    email: '',
+                    username: login,
+                    error: 'An account with this login already exists'
+                });
+            } else {
+                const hashedPassword = await bcrypt.hash(password, 10);
+                const newUser= {Email:email, Username:login, Password:hashedPassword, UserId:"0" };
+            
+                //const db = client.db();
+                const results = await db.collection('Users').insertOne(newUser);
+                const id = results.insertedId;
+
+                //Test Logs
+                //console.log(hashedPassword)
+                fs.appendFile(logFilePath, hashedPassword + '\n', (err) => {});
+                fs.appendFile(logFilePath, results + '\n\n', (err) => {});
     
-            // Return a single JSON response
-            res.status(200).json({
-                id: id,            // The user's unique ID
-                email: newUser.Email,
-                username: newUser.Username,
-                error: '',         // No error
-            });
+                // Return a single JSON response
+                res.status(200).json({
+                    id: id,            // The user's unique ID
+                    email: newUser.Email,
+                    username: newUser.Username,
+                    error: '',         // No error
+                });
+            }
+            
         } catch (e) {
             // Handle any errors that occur during the database operation
             const error = e.toString();
@@ -106,7 +120,7 @@ app.post('/api/signup', async (req, res, next) => {
     }else{
       //Passwords do not match      
       var ret = { id: id,  email: e, username: username, error: error};     
-      res.status(200).json(ret);
+      res.status(400).json(ret);
     }
 });
 
