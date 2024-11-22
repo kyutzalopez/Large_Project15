@@ -241,28 +241,42 @@ app.post('/api/login', async (req, res, next) => {
     // incoming: login, password
     // outgoing: id, firstName, lastName, error
 
-    var error = '';
-
     const { login, password } = req.body;
 
     const db = client.db();
-    const results = await db.collection('Users').find({ Username: login, Password: password }).toArray();
+    const results = await db.collection('Users').find({ Username: login}).toArray();
 
     var id = -1;
     var e ='';
     var username = '';
-    var error = 'User/Password combination incorrect';
+    var error = 'No user found';
 
+    if (results.length <= 0) {
+        var ret = { id: id,  email: e, username: username, error};
+        return res.status(400).json(ret);
+    }
+    try {
 
-    if (results.length > 0) {
-        id = results[0].UserId;
-        e = results[0].Email;
-        username = results[0].Username;
-        error = '';
+        var storedPassword = results[0].Password;
+        if(await bcrypt.compare(password, storedPassword)){
+            id = results[0].UserId;
+            e = results[0].Email;
+            username = results[0].Username;
+            error = '';
+        } else {
+            error = 'Password is incorrect';
+            var ret = { id: id,  email: e, username: username, error};
+            return res.status(400).json(ret);
+        }
+    } catch (e) {
+        // Handle any errors that occur during password compare
+        const error = e.toString();
+        res.status(500).json({ error }); // Send an error response
     }
 
     var ret = { id: id,  email: e, username: username, error};
-    res.status(200).json(ret);
+    return res.status(200).json(ret);
+   
 });
 
 //app.listen(5000); // start Node + Express server on port 5000
