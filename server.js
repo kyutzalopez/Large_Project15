@@ -100,8 +100,8 @@ app.post('/api/signup', async (req, res, next) => {
 
                 //Test Logs
                 //console.log(hashedPassword)
-                fs.appendFile(logFilePath, hashedPassword + '\n', (err) => {});
-                fs.appendFile(logFilePath, results + '\n\n', (err) => {});
+                fs.appendFile(logFilePath, 'Sign up, Pass: ' + hashedPassword + '\n', (err) => {});
+                fs.appendFile(logFilePath, id + ' - ' + results.login + '\n\n', (err) => {});
     
                 // Return a single JSON response
                 res.status(200).json({
