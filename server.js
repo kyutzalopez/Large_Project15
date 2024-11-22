@@ -259,7 +259,7 @@ app.post('/api/login', async (req, res, next) => {
 
         var storedPassword = results[0].Password;
         if(await bcrypt.compare(password, storedPassword)){
-            id = results[0].insertedId;
+            id = results[0]._id;
             e = results[0].Email;
             username = results[0].Username;
             error = '';
