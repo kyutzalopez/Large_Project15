@@ -266,7 +266,7 @@ app.post('/api/login', async (req, res, next) => {
         } else {
             error = 'Password is incorrect';
             var ret = { id: id,  email: e, username: username, error};
-            return res.status(400).json(ret);
+            return res.status(418).json(ret);
         }
     } catch (e) {
         // Handle any errors that occur during password compare
