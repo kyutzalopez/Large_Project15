@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Volkhov&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Volkhov:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 /*<a href="https://www.flaticon.com/free-icons/ecommerce" title="ecommerce icons">Ecommerce icons created by brajaomar_j - Flaticon</a>*/
 :root {
   font-family: 'Volkhov', serif;
@@ -14,17 +14,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 #title {
   font-size: 48px;
   color:white;
-}
-
-#collectionTitle {
-  font-size: 40px;
-  color: white;
-  position: absolute;
-  top: 10px;    /* Distance from the top of the popUpDiv */
-  left: 50px;  /* Distance from the right of the popUpDiv */
 }
 
 .section {
@@ -41,41 +34,7 @@
   top: 500px;
 }
 
-#searchBar {
-  border-radius: 30px;
-  border: none;
-  position: absolute;
-  top: 20px;    /* Distance from the top of the popUpDiv */
-  right: 50px;  /* Distance from the right of the popUpDiv */
-  padding-left: 20px;
-  font-family: 'Volkhov', serif;
-  font-size: 25px;
-  color: white;
-  background-color: #585656;
-  width: 400px; /* Set a fixed width for the search bar */
-  height: 45px; /* Set a fixed height for the search bar */
-  box-sizing: border-box; /* Ensures padding doesn't affect the width/height */
 
-}
-
-#searchButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
-
-#searchIcon {
-  position: absolute;
-  top: 30px;    /* Distance from the top of the popUpDiv */
-  right: 70px;  /* Distance from the right of the popUpDiv */
-  width:24px;
-  height:24px;
-  background-color: transparent;
-  background: transparent;
-  display: block; /* Prevents inline spacing issues */
-  
-}
 
 #subText {
   color:white;
@@ -208,6 +167,191 @@ button {
   transition: border-color 0.25s;
 }
 
+/* ----- Dashboard page styles --------------------------------------------------------------------------------- */
+#dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;  
+  height: 90vh;
+  width: 90vw;
+}
+
+#header {
+  font-size: 40px;
+  text-align: start;
+  color: white;
+  top: 10px;    /* Distance from the top of the popUpDiv */
+  left: 50px;  /* Distance from the right of the popUpDiv */
+}
+
+#buttonPanel {
+  display: flex;
+  width: 90vw;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+#subheading {
+  text-align: left;
+  font-size: 25px;
+  margin: 0;
+  width: 50vw;
+}
+
+#searchBar {
+  border-radius: 5px;
+  padding-left: 15px;
+  border: none;
+  font-family: 'Volkhov', serif;
+  font-size: 12px;
+  color: black;
+  background-color: white;
+  width: 200px; /* Set a fixed width for the search bar */
+  height: 40px; /* Set a fixed height for the search bar */
+  box-sizing: border-box; /* Ensures padding doesn't affect the width/height */
+}
+
+#searchButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+#searchButtonWrapper{
+  /* border: solid 2px yellow; */
+  position: relative;
+  margin-right: 10px;
+  height: fit-content;
+  width: fit-content;
+}
+
+#searchIcon {
+  top: 8px;    /* Distance from the top of the popUpDiv */
+  right: 10px;  /* Distance from the right of the popUpDiv */
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  background: transparent;
+  display: block; /* Prevents inline spacing issues */
+  
+}
+
+#addReviewButton {
+  border-radius: 5px;
+  border: none;
+  height: 40px;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: 'Volkhov', serif;
+  background-color: #0D8B20;
+  font-size: 12px;
+  box-sizing: border-box; /* Ensures padding doesn't affect the width/height */
+}
+
+.solid {
+  width: 90vw;
+  color: rgba(0, 0, 0, 0.3);
+}
+
+#cardUIDiv {
+  border-radius: 30px;
+  height: 500px;
+  width: 500px;
+}
+
+#addReviewButton:hover {
+  background-color: #0d6e1c;
+}
+
+/* ----- CreateReview page styles --------------------------------------------------------------------------------- */
+#reviewpage {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;  
+  height: 90vh;
+  width: 90vw;
+}
+
+.content {
+  margin-top: 15px;
+  width: 90vw;
+  display: flex;
+  justify-content: space-between;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  width: 500px;
+  background-color: #141414;
+  border-radius: 15px;
+}
+
+#reviewTitle {
+  position: relative;
+  font-size: 30px;
+  text-align: center;
+  margin: 0;
+  top: -10px;
+}
+
+h3 {
+  margin: 0;
+}
+
+#dateWatched {
+  font-size: 15px;
+}
+
+#rating {
+  font-size: 15px;
+  text-align: center;
+}
+
+textarea {
+  font-size: 16px;
+  padding: 20px;
+  height: 30%;
+  border-radius: 10px;
+}
+
+#ratingPanel {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  display: flex;
+  height: fit-content;
+  justify-content: space-around;
+  width: 100%;
+}
+
+#saveReviewButton {
+  margin-top: 10px;
+  margin-left: 430px;
+  border-radius: 5px;
+  border: none;
+  width: fit-content;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: 'Volkhov', serif;
+  background-color: #0D8B20;
+  font-size: 15px;
+  box-sizing: border-box; /* Ensures padding doesn't affect the width/height */
+}
+
+#saveReviewButton:hover {
+  background-color: #0d6e1c;
+}
+
+#movieCard {
+  border: solid 1px white;
+  width: 350px; 
+}
 
 
 @media (max-width: 600px) {

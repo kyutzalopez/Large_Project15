@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import PageTitle from '../components/PageTitle.tsx';
-import Login from '../components/Login.tsx';
-import SignUp from '../components/SignUp.tsx';
+import PageTitle from '../components/HomePage/PageTitle.tsx';
+import Login from '../components/HomePage/Login.tsx';
+import SignUp from '../components/HomePage/SignUp.tsx';
 
 const LoginPage = () => {
       // State to control whether the Login component should be displayed

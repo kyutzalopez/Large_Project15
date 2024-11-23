@@ -3,6 +3,7 @@ import './App.css';
 
 import HomePage from './pages/HomePage.tsx';
 import Dashboard from './pages/Dashboard.tsx';
+import CreateReview from './pages/CreateReview.tsx';
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/movies" element={<Dashboard />} />
+        <Route path="/review" element={<CreateReview />} />
       </Routes>
     </Router>
   );
