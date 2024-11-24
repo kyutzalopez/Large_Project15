@@ -124,6 +124,40 @@ app.post('/api/signup', async (req, res, next) => {
     }
 });
 
+app.post('/api/deleteUser', async (req, res, next) => {
+    // incoming: login, password
+    // outgoing: error
+    const {login, password} = req.body;
+    
+    var error = '';
+ 
+      try {
+          const db = client.db();
+          const loginMatched = await db.collection('Users').find({ Username: login, Password: password}).toArray();
+          if(loginMatched.length <= 0) {
+
+              // Return JSON Error: Not a user
+              res.status(418).json({
+                  error: 'User with that login and password does not exsist'
+              });
+          } else {
+          
+              //const db = client.db();
+              await db.collection('Users').deleteOne(loginMatched);
+  
+              // Return a single JSON response
+              res.status(200).json({
+                  error: '',         // No error
+              });
+          }
+          
+      } catch (e) {
+          // Handle any errors that occur during the database operation
+          const error = e.toString();
+          res.status(500).json({ error }); // Send an error response
+      }
+});
+
 /*app.post('/api/addcard', async (req, res, next) => {
     // incoming: userId, color
     // outgoing: error
@@ -165,6 +199,37 @@ app.post('/api/addmovieWatched', async (req, res, next) => {
       res.status(200).json(ret);
   });
 
+  //delete a movie a user has WATCHED
+  app.post('/api/deletemovieWatched', async (req, res, next) => {
+    // incoming: userId, title
+    // outgoing: error
+      const { userId, title} = req.body;
+  
+      var error = '';
+  
+      try {
+          const db = client.db();
+          const movieToDelete = await db.collection('WatchedMovies').find({ Title: title, UserId: userId }).toArray();
+          if(movieToDelete.length <= 0) {
+                // Return JSON Error: Not a movie
+                res.status(418).json({
+                    error: 'Movie does not exsist'
+                });
+            } else {
+                //movie can be deleted
+                db.collection('WatchedMovies').deleteOne(movieToDelete);
+                //return no error
+                var ret = { error: error };
+                res.status(200).json(ret);
+
+
+            }
+      }
+      catch (e) {
+          error = e.toString();
+      }
+  });
+
 //add title to list of movies user WILL WATCH
 app.post('/api/addmovieWatchlist', async (req, res, next) => {
     // incoming: userId, title
@@ -186,6 +251,37 @@ app.post('/api/addmovieWatchlist', async (req, res, next) => {
     var ret = { error: error };
     res.status(200).json(ret);
 });
+
+//remove title from the WATCH LIST
+app.post('/api/deletemovieWatched', async (req, res, next) => {
+    // incoming: userId, title
+    // outgoing: error
+      const { userId, title} = req.body;
+  
+      var error = '';
+  
+      try {
+          const db = client.db();
+          const movieToDelete = await db.collection('Watchlist').find({ Title: title, UserId: userId }).toArray();
+          if(movieToDelete.length <= 0) {
+                // Return JSON Error: Not a movie
+                res.status(418).json({
+                    error: 'Movie does not exsist'
+                });
+            } else {
+                //movie can be deleted
+                db.collection('Watchlist').deleteOne(movieToDelete);
+                //return no error
+                var ret = { error: error };
+                res.status(200).json(ret);
+
+
+            }
+      }
+      catch (e) {
+          error = e.toString();
+      }
+  });
 
 //search watchlist and return movies with partial matching
 app.post('/api/searchWatchlist', async (req, res, next) => {
