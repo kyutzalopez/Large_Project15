@@ -1,6 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const bcrypt = require('bcrypt');     //"npm instal bcrypt" in root
+const fs = require('fs'); //file system
+const path = require('path');
+const logFilePath = path.join(__dirname, 'log.txt');
 const app = express();
 app.use(express.json());
 
@@ -63,9 +67,9 @@ app.use((req, res, next) => {
 //new version
 app.post('/api/signup', async (req, res, next) => {
       // incoming: email, login, password, repassword
-      // outgoing: error
+      // outgoing: id, email, username, error
       const { email, login, password, repassword } = req.body;
-      const newUser= {Email:email, Username:login, Password:password, UserId:"0" };
+      //const newUser= {Email:email, Username:login, Password:password, UserId:"0" }; !!!!!!!
       const passMatch = (password === repassword);
       
       var id = -1;
@@ -76,39 +80,90 @@ app.post('/api/signup', async (req, res, next) => {
       if (passMatch) {    
         try {
             const db = client.db();
-            const results = await db.collection('Users').insertOne(newUser);
-            const id = results.insertedId;
+            const loginMatched = await db.collection('Users').find({ Username: login}).toArray();
+            if(loginMatched.length > 0) {
+
+                // Return JSON Error: Account already exists
+                res.status(418).json({
+                    id: id,
+                    email: '',
+                    username: login,
+                    error: 'An account with this login already exists'
+                });
+            } else {
+                const hashedPassword = await bcrypt.hash(password, 10);
+                const newUser= {Email:email, Username:login, Password:hashedPassword, UserId:"0" };
+            
+                //const db = client.db();
+                const results = await db.collection('Users').insertOne(newUser);
+                const id = results.insertedId;
+
+                //Test Logs
+                //console.log(hashedPassword)
+                fs.appendFile(logFilePath, 'Sign up, Pass: ' + hashedPassword + '\n', (err) => {});
+                fs.appendFile(logFilePath, id + ' - ' + results.Username + '\n\n', (err) => {});
     
-            // Return a single JSON response
-            res.status(200).json({
-                id: id,            // The user's unique ID
-                e: newUser.Email,
-                username: newUser.Username,
-                error: '',         // No error
-            });
+                // Return a single JSON response
+                res.status(200).json({
+                    id: id,            // The user's unique ID
+                    email: newUser.Email,
+                    username: newUser.Username,
+                    error: '',         // No error
+                });
+            }
+            
         } catch (e) {
             // Handle any errors that occur during the database operation
             const error = e.toString();
             res.status(500).json({ error }); // Send an error response
         }
     }else{
-
-      //Users.push(login);
-      var ret = { id: id,  email: e, username: username, error: error};
-     
-      res.status(200).json(ret);
+      //Passwords do not match      
+      var ret = { id: id,  email: e, username: username, error: error};     
+      res.status(400).json(ret);
     }
+});
+
+app.post('/api/deleteUser', async (req, res, next) => {
+    // incoming: login, password
+    // outgoing: error
+    const {login, password} = req.body;
+    
+    var error = '';
+ 
+      try {
+          const db = client.db();
+          const loginMatched = await db.collection('Users').find({ Username: login, Password: password}).toArray();
+          if(loginMatched.length <= 0) {
+
+              // Return JSON Error: Not a user
+              res.status(418).json({
+                  error: 'User with that login and password does not exsist'
+              });
+          } else {
+          
+              //const db = client.db();
+              await db.collection('Users').deleteOne(loginMatched);
+  
+              // Return a single JSON response
+              res.status(200).json({
+                  error: '',         // No error
+              });
+          }
+          
+      } catch (e) {
+          // Handle any errors that occur during the database operation
+          const error = e.toString();
+          res.status(500).json({ error }); // Send an error response
+      }
 });
 
 /*app.post('/api/addcard', async (req, res, next) => {
     // incoming: userId, color
     // outgoing: error
-
     const { userId, card } = req.body;
-
     const newCard = { Card: card, UserId: userId };
     var error = '';
-
     try {
         const db = client.db();
         const result = db.collection('Cards').insertOne(newCard);
@@ -116,13 +171,13 @@ app.post('/api/signup', async (req, res, next) => {
     catch (e) {
         error = e.toString();
     }
-
     cardList.push(card);
-
     var ret = { error: error };
     res.status(200).json(ret);
 });
 */
+
+
 //add movie title to list of movies user has WATCHED
 app.post('/api/addmovieWatched', async (req, res, next) => {
     // incoming: userId, title, review, rating
@@ -142,6 +197,37 @@ app.post('/api/addmovieWatched', async (req, res, next) => {
   
       var ret = { error: error };
       res.status(200).json(ret);
+  });
+
+  //delete a movie a user has WATCHED
+  app.post('/api/deletemovieWatched', async (req, res, next) => {
+    // incoming: userId, title
+    // outgoing: error
+      const { userId, title} = req.body;
+  
+      var error = '';
+  
+      try {
+          const db = client.db();
+          const movieToDelete = await db.collection('WatchedMovies').find({ Title: title, UserId: userId }).toArray();
+          if(movieToDelete.length <= 0) {
+                // Return JSON Error: Not a movie
+                res.status(418).json({
+                    error: 'Movie does not exsist'
+                });
+            } else {
+                //movie can be deleted
+                db.collection('WatchedMovies').deleteOne(movieToDelete);
+                //return no error
+                var ret = { error: error };
+                res.status(200).json(ret);
+
+
+            }
+      }
+      catch (e) {
+          error = e.toString();
+      }
   });
 
 //add title to list of movies user WILL WATCH
@@ -165,6 +251,37 @@ app.post('/api/addmovieWatchlist', async (req, res, next) => {
     var ret = { error: error };
     res.status(200).json(ret);
 });
+
+//remove title from the WATCH LIST
+app.post('/api/deletemovieWatched', async (req, res, next) => {
+    // incoming: userId, title
+    // outgoing: error
+      const { userId, title} = req.body;
+  
+      var error = '';
+  
+      try {
+          const db = client.db();
+          const movieToDelete = await db.collection('Watchlist').find({ Title: title, UserId: userId }).toArray();
+          if(movieToDelete.length <= 0) {
+                // Return JSON Error: Not a movie
+                res.status(418).json({
+                    error: 'Movie does not exsist'
+                });
+            } else {
+                //movie can be deleted
+                db.collection('Watchlist').deleteOne(movieToDelete);
+                //return no error
+                var ret = { error: error };
+                res.status(200).json(ret);
+
+
+            }
+      }
+      catch (e) {
+          error = e.toString();
+      }
+  });
 
 //search watchlist and return movies with partial matching
 app.post('/api/searchWatchlist', async (req, res, next) => {
@@ -220,28 +337,42 @@ app.post('/api/login', async (req, res, next) => {
     // incoming: login, password
     // outgoing: id, firstName, lastName, error
 
-    var error = '';
-
     const { login, password } = req.body;
 
     const db = client.db();
-    const results = await db.collection('Users').find({ Username: login, Password: password }).toArray();
+    const results = await db.collection('Users').find({ Username: login}).toArray();
 
     var id = -1;
     var e ='';
     var username = '';
-    var error = 'User/Password combination incorrect';
+    var error = 'No user found';
 
+    if (results.length <= 0) {
+        var ret = { id: id,  email: e, username: username, error};
+        return res.status(400).json(ret);
+    }
+    try {
 
-    if (results.length > 0) {
-        id = results[0].UserId;
-        e = results[0].Email;
-        username = results[0].Username;
-        error = '';
+        var storedPassword = results[0].Password;
+        if(await bcrypt.compare(password, storedPassword)){
+            id = results[0]._id;
+            e = results[0].Email;
+            username = results[0].Username;
+            error = '';
+        } else {
+            error = 'Password is incorrect';
+            var ret = { id: id,  email: e, username: username, error};
+            return res.status(418).json(ret);
+        }
+    } catch (e) {
+        // Handle any errors that occur during password compare
+        const error = e.toString();
+        res.status(500).json({ error }); // Send an error response
     }
 
     var ret = { id: id,  email: e, username: username, error};
-    res.status(200).json(ret);
+    return res.status(200).json(ret);
+   
 });
 
 //app.listen(5000); // start Node + Express server on port 5000
