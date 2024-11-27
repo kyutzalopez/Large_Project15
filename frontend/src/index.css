@@ -409,13 +409,13 @@ textarea {
 }
 
 
-@media (max-width: 600px) {
+/* @media (max-width: 600px) {
   transition: all 0.3s ease;
   position: absolute;
   top: 20px;     
   right: 20px;   
   z-index: 1000;  
-}
+} */
 
 #logoutButton:hover {
     transform: scale(1.05);
