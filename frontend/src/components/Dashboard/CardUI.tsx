@@ -1,49 +1,19 @@
 import React, { useState } from 'react';
-import searchIcon from '../assets/icons/search.png'; // Import the image
+import searchIcon from '/home/bitnami/stack/projects/movies/frontend/src/assets/icons/search.png'; // Import the image
 
 function CardUI() {
     let _ud: any = localStorage.getItem('user_data');
     let ud = JSON.parse(_ud);
     let userId: string = ud.id;
-    let firstName: string = ud.firstName;
-    let lastName: string = ud.lastName;
 
     const [message, setMessage] = useState('');
     const [searchResults, setResults] = useState('');
-    const [cardList, setCardList] = useState('');
+    const [cardList, setCardList] = useState<any[]>([]); // Generic typing
     const [search, setSearchValue] = React.useState('');
-    const [card, setCardNameValue] = React.useState('');
+    const [watchListTitle, setWatchListTitle] = React.useState('');
     const [watchedTitle, setWatchedTitle] = React.useState('');
     const [watchedReview, setWatchedReview] = React.useState('');
     const [watchedRating, setWatchedRating] = React.useState('');
-
-    // needs to be addmovieWatchlist and addmovieWatched function to work w new js functions
-    async function addCard(e: any): Promise<void> {
-        e.preventDefault();
-        let obj = { userId: userId, card: card };
-        let js = JSON.stringify(obj);
-        try {
-            const response = await
-                fetch('https://www.cop4331gerber.online/api/addcard',
-                    {
-                        method: 'POST', body: js, headers: {
-                            'Content-Type':
-                                'application/json'
-                        }
-                    });
-            let txt = await response.text();
-            let res = JSON.parse(txt);
-            if (res.error.length > 0) {
-                setMessage("API Error:" + res.error);
-            }
-            else {
-                setMessage('Card has been added');
-            }
-        }
-        catch (error: any) {
-            setMessage(error.toString());
-        }
-    };
 
     async function addWatchedMovie(e: any): Promise<void> {
         e.preventDefault();
@@ -72,13 +42,13 @@ function CardUI() {
         }
     };
 
-    async function searchCard(e: any): Promise<void> {
+    async function addMovieWatchList(e: any): Promise<void> {
         e.preventDefault();
-        let obj = { userId: userId, search: search };
+        let obj = { userId: userId, title: watchListTitle};
         let js = JSON.stringify(obj);
         try {
             const response = await
-                fetch('https://www.cop4331gerber.online/api/searchWatched',
+                fetch('https://www.cop4331gerber.online/api/addmovieWatchList',
                     {
                         method: 'POST', body: js, headers: {
                             'Content-Type':
@@ -87,32 +57,113 @@ function CardUI() {
                     });
             let txt = await response.text();
             let res = JSON.parse(txt);
-            let _results = res.results;
-            let resultText = '';
-            for (let i = 0; i < _results.length; i++) {
-                resultText += _results[i];
-                if (i < _results.length - 1) {
-                    resultText += ', ';
-                }
+            if (res.error.length > 0) {
+                setMessage("API Error:" + res.error);
             }
-            setResults('Card(s) have been retrieved');
-            setCardList(resultText);
+            else {
+                setMessage('Movie has been added');
+            }
         }
         catch (error: any) {
+            setMessage(error.toString());
+        }
+    };
+
+    async function searchWatched(e: any): Promise<void> {
+        e.preventDefault();
+        let obj = { userId: userId, search: search };
+        let js = JSON.stringify(obj);
+    
+        try {
+            const response = await fetch('https://www.cop4331gerber.online/api/searchWatched', {
+                method: 'POST',
+                body: js,
+                headers: { 'Content-Type': 'application/json' },
+            });
+    
+            let txt = await response.text();
+            let res = JSON.parse(txt);
+    
+            if (res.error) {
+                setResults('Error: ' + res.error);
+            } else {
+                setResults('Movies have been retrieved');
+                setCardList(res.results); // Set the response as the array directly
+            }
+        } catch (error: any) {
             alert(error.toString());
             setResults(error.toString());
         }
-    };
+    }
+
+    async function searchWatchList(e: any): Promise<void> {
+        e.preventDefault();
+        let obj = { userId: userId, search: search };
+        let js = JSON.stringify(obj);
+    
+        try {
+            const response = await fetch('https://www.cop4331gerber.online/api/searchWatched', {
+                method: 'POST',
+                body: js,
+                headers: { 'Content-Type': 'application/json' },
+            });
+    
+            let txt = await response.text();
+            let res = JSON.parse(txt);
+    
+            if (res.error) {
+                setResults('Error: ' + res.error);
+            } else {
+                setResults('Movies have been retrieved');
+                setCardList(res.results); // Set the response as the array directly
+            }
+        } catch (error: any) {
+            alert(error.toString());
+            setResults(error.toString());
+        }
+    }
+
+    async function deleteMovieWatched(movieTitle: any): Promise<void> {
+
+        let obj = { userId: userId, title: movieTitle };
+        let js = JSON.stringify(obj);
+
+        try {
+          // Send a DELETE request to your API
+          const response = await fetch('https://www.cop4331gerber.online/api/deletemovieWatched', {
+            method: 'POST',
+            body: js,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+      
+          let txt = await response.text();
+          let res = JSON.parse(txt);
+
+          if (res.error) {
+            setMessage('Error deleting movie: ' + res.error);
+          } else {
+            // Successfully deleted, update the card list in the UI
+            setMessage('Movie deleted successfully');
+            setCardList(cardList.filter((movie) => movie.title !== movieTitle));
+          }
+        } catch (error: any) {
+          setMessage('Failed to delete movie: ' + error.toString());
+        }
+      }
+    
 
     function handleSearchTextChange(e: any): void {
         setSearchValue(e.target.value);
     }
-    function handleCardTextChange(e: any): void {
-        setCardNameValue(e.target.value);
-    }
 
     function handleWatchedTitleChange(e: any): void {
         setWatchedTitle(e.target.value);
+    }
+
+    function handleWatchedListTitleChange(e: any): void {
+        setWatchListTitle(e.target.value);
     }
 
     function handleWatchedReview(e: any): void {
@@ -128,13 +179,27 @@ function CardUI() {
             <br />
             <input id="searchBar" type="text" placeholder="Search Your Reviews.."
                 onChange={handleSearchTextChange} />
-            <button id="searchButton" onClick={searchCard}><img id = "searchIcon" src={searchIcon}/></button><br /> 
+            <button id="searchButton" onClick={searchWatched}><img id = "searchIcon" src={searchIcon}/></button><br />
             <span id="cardSearchResult">{searchResults}</span>
             
             <div id="container">
                 <div className="section" id="watched">
                     <h2>Watched</h2>
-                    
+                    <div className="movie-list">
+                    {cardList.length > 0 ? (
+                        cardList.map((movie: any, index: number) => (
+                            <div key={index} className="movie-card">
+                                <h3>{movie.title}</h3>
+                                <p>Review: {movie.review}</p>
+                                <p>Rating: {movie.rating}</p>
+                                <button onClick={() => deleteMovieWatched(movie.title)}>Delete</button>
+                            </div>
+                        ))
+                    ) : (
+                        <p></p>
+                    )}
+                    </div>
+            
                 </div>
 
                 <div className="section" id="wantToWatch">
@@ -142,10 +207,7 @@ function CardUI() {
                    
                 </div>
             </div>
-            
-            
-            <p id="cardList">{cardList}</p><br /><br />
-            
+
             <h2>Add Your Review</h2>
 
             <input type="text" id="watchedTitle" placeholder="Movie Title"
@@ -154,9 +216,18 @@ function CardUI() {
                 onChange={handleWatchedReview} /><br />
             <input type="number" step="1" min="0" max="5" id="watchedRating" placeholder="Movie Rating"
                 onChange={handleWatchedRating} /><br />
-            
+
             <button type="button" id="addMovieButton" className="buttons"
                 onClick={addWatchedMovie}> Add Movie Review </button><br />
+            <span id="movieAddResult">{message}</span>
+
+            <h2>Add Movie You Want To Watch</h2>
+
+            <input type="text" id="watchListTitle" placeholder="Movie Title"
+                onChange={handleWatchedListTitleChange} /><br />
+
+            <button type="button" id="addMovieButton" className="buttons"
+                onClick={addMovieWatchList}> Add Movie </button><br />
             <span id="movieAddResult">{message}</span>
 
         </div>
