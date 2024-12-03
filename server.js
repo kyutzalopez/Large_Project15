@@ -182,53 +182,83 @@ app.post('/api/deleteUser', async (req, res, next) => {
 app.post('/api/addmovieWatched', async (req, res, next) => {
     // incoming: userId, title, review, rating
     // outgoing: error
-      const { userId, title, review, rating } = req.body;
+    const { userId, title, review, rating } = req.body;
   
-      const newMovie = { Title: title, UserId: userId, Review: review, Rating: rating };
-      var error = '';
+    const newMovie = { Title: title, UserId: userId, Review: review, Rating: rating };
+    var error = '';
   
-      try {
-          const db = client.db();
-          const result = db.collection('WatchedMovies').insertOne(newMovie);
-      }
-      catch (e) {
-          error = e.toString();
-      }
+    try {
+        const db = client.db();
+        const result = db.collection('WatchedMovies').insertOne(newMovie);
+    }
+    catch (e) {
+        error = e.toString();
+    }
   
-      var ret = { error: error };
-      res.status(200).json(ret);
-  });
+    var ret = { error: error };
+    res.status(200).json(ret);
+});
 
-  //delete a movie a user has WATCHED
-  app.post('/api/deletemovieWatched', async (req, res, next) => {
+//delete a movie a user has WATCHED
+app.post('/api/deletemovieWatched', async (req, res, next) => {
     // incoming: userId, title
     // outgoing: error
-      const { userId, title} = req.body;
+    const { userId, title} = req.body;
   
-      var error = '';
+    var error = '';
   
-      try {
-          const db = client.db();
-          const movieToDelete = await db.collection('WatchedMovies').find({ Title: title, UserId: userId }).toArray();
-          if(movieToDelete.length <= 0) {
-                // Return JSON Error: Not a movie
-                res.status(418).json({
-                    error: 'Movie does not exsist'
-                });
-            } else {
-                //movie can be deleted
-                db.collection('WatchedMovies').deleteOne(movieToDelete);
-                //return no error
-                var ret = { error: error };
-                res.status(200).json(ret);
+    try {
+        const db = client.db();
+        const movieToDelete = await db.collection('WatchedMovies').find({ Title: title, UserId: userId }).toArray();
+        if(movieToDelete.length <= 0) {
+            // Return JSON Error: Not a movie
+            res.status(418).json({
+                error: 'Movie does not exsist'
+            });
+        } else {
+            //movie can be deleted
+            db.collection('WatchedMovies').deleteOne(movieToDelete);
+            //return no error
+            var ret = { error: error };
+            res.status(200).json(ret);
 
 
-            }
-      }
-      catch (e) {
-          error = e.toString();
-      }
-  });
+        }
+    }
+    catch (e) {
+        error = e.toString();
+    }
+});
+
+//edit a movie a user has WATCHED
+app.post('/api/editmovieWatched', async (req, res, next) => {
+    // incoming: userId, title
+    // outgoing: error
+    const { userId, title, newTitle, newReview, newRating} = req.body;
+    const newMovie = { Title: newTitle, UserId: userId, Review: newReview, Rating: newRating };
+    var error = '';
+      
+    try {
+        const db = client.db();
+        const movieToDelete = await db.collection('WatchedMovies').find({ Title: title, UserId: userId }).toArray();
+        if(movieToDelete.length <= 0) {
+            // Return JSON Error: Not a movie
+            res.status(418).json({
+                error: 'Movie does not exsist'
+            });
+        } else {
+            //movie can be deleted then inserted with the new info
+            db.collection('WatchedMovies').deleteOne(movieToDelete);
+            const result = db.collection('WatchedMovies').insertOne(newMovie);
+            //return no error
+            var ret = { error: error };
+            res.status(200).json(ret);
+        }
+    }
+    catch (e) {
+        error = e.toString();
+    }
+});
 
 //add title to list of movies user WILL WATCH
 app.post('/api/addmovieWatchlist', async (req, res, next) => {
@@ -253,7 +283,7 @@ app.post('/api/addmovieWatchlist', async (req, res, next) => {
 });
 
 //remove title from the WATCH LIST
-app.post('/api/deletemovieWatched', async (req, res, next) => {
+app.post('/api/deletemovieWatchlist', async (req, res, next) => {
     // incoming: userId, title
     // outgoing: error
       const { userId, title} = req.body;
@@ -281,7 +311,37 @@ app.post('/api/deletemovieWatched', async (req, res, next) => {
       catch (e) {
           error = e.toString();
       }
-  });
+});
+
+//edit a movie a user has on their watch list
+app.post('/api/editmovieWatchlist', async (req, res, next) => {
+    // incoming: userId, title
+    // outgoing: error
+    const { userId, title, newTitle, newReview, newRating} = req.body;
+    const newMovie = { Title: newTitle, UserId: userId, Review: newReview, Rating: newRating };
+    var error = '';
+      
+    try {
+        const db = client.db();
+        const movieToDelete = await db.collection('Watchlist').find({ Title: title, UserId: userId }).toArray();
+        if(movieToDelete.length <= 0) {
+            // Return JSON Error: Not a movie
+            res.status(418).json({
+                error: 'Movie does not exsist'
+            });
+        } else {
+            //movie can be deleted then inserted with the new info
+            db.collection('Watchlist').deleteOne(movieToDelete);
+            const result = db.collection('Watchlist').insertOne(newMovie);
+            //return no error
+            var ret = { error: error };
+            res.status(200).json(ret);
+        }
+    }
+    catch (e) {
+        error = e.toString();
+    }
+});
 
 //search watchlist and return movies with partial matching
 app.post('/api/searchWatchlist', async (req, res, next) => {
