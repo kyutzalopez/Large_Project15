@@ -1,7 +1,7 @@
 async function getMovieInfo(event: any): Promise<void> {
       event.preventDefault();
 
-      //Get movie name and put into search term variable
+      //Get movie name and put into search term variable "search"
 
       const url = 'https://api.themoviedb.org/3/search/movie?query=' + search + '&include_adult=false&language=en-US&page=1';
       const options = {
@@ -17,12 +17,16 @@ async function getMovieInfo(event: any): Promise<void> {
 
           var res = JSON.parse(await response.text());
 
-          if (res.id <= 0) {
-              setMessage('User/Password combination incorrect');
+          if (res.total_results <= 0) {
+              setMessage('No such movie found in tmdb');
           }
           else {
-              var user = {id: res.id , email: res.email, username: res.username}
-              localStorage.setItem('user_data', JSON.stringify(user));
+                //Modify this section per front end needs --------------------------------------
+              var imageURL = 'https://image.tmdb.org/t/p/w500' + res.results[0].poster_path
+                
+              var data = {id: res.results[0].id , title: res.results[0].title, rating: res.results[0].vote_average,
+                         posterURL: imageURL, overview: res.results[0].overview}
+              localStorage.setItem(res.results[0].title + '_data', JSON.stringify(data));
 
               setMessage('');
               window.location.href = '/movies';
