@@ -14,6 +14,10 @@ function CardUI() {
     const [watchedTitle, setWatchedTitle] = React.useState('');
     const [watchedReview, setWatchedReview] = React.useState('');
     const [watchedRating, setWatchedRating] = React.useState('');
+    const [editingMovie, setEditingMovie] = useState<string | null>(null);
+    const [newTitle, setNewTitle] = useState('');
+    const [newReview, setNewReview] = useState('');
+    const [newRating, setNewRating] = useState('');
 
     async function addWatchedMovie(e: any): Promise<void> {
         e.preventDefault();
@@ -93,6 +97,44 @@ function CardUI() {
         } catch (error: any) {
             alert(error.toString());
             setResults(error.toString());
+        }
+    }
+
+    async function editMovieWatched(originalTitle: string): Promise<void> {
+        let obj = { 
+            userId: userId, 
+            title: originalTitle, 
+            newTitle: newTitle || originalTitle, 
+            newReview: newReview || cardList.find(movie => movie.title === originalTitle).review,
+            newRating: newRating || cardList.find(movie => movie.title === originalTitle).rating,
+        };
+        let js = JSON.stringify(obj);
+    
+        try {
+            const response = await fetch('https://www.cop4331gerber.online/api/editmovieWatched', {
+                method: 'POST',
+                body: js,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            let txt = await response.text();
+            let res = JSON.parse(txt);
+    
+            if (res.error) {
+                setMessage('Error editing movie: ' + res.error);
+            } else {
+                setMessage('Movie edited successfully');
+                setCardList(cardList.map(movie =>
+                    movie.title === originalTitle
+                        ? { ...movie, title: newTitle, review: newReview, rating: newRating }
+                        : movie
+                ));
+                setEditingMovie(null); // Exit edit mode
+            }
+        } catch (error: any) {
+            setMessage('Failed to edit movie: ' + error.toString());
         }
     }
 
@@ -186,18 +228,41 @@ function CardUI() {
                 <div className="section" id="watched">
                     <h2>Watched</h2>
                     <div className="movie-list">
-                    {cardList.length > 0 ? (
-                        cardList.map((movie: any, index: number) => (
-                            <div key={index} className="movie-card">
-                                <h3>{movie.title}</h3>
-                                <p>Review: {movie.review}</p>
-                                <p>Rating: {movie.rating}</p>
-                                <button onClick={() => deleteMovieWatched(movie.title)}>Delete</button>
-                            </div>
-                        ))
-                    ) : (
-                        <p></p>
-                    )}
+                    {cardList.map((movie: any, index: number) => (
+                        <div key={index} className="movie-card">
+                            {editingMovie === movie.title ? (
+                                // Render edit form
+                                <div>
+                                    <input
+                                        type="text"
+                                        defaultValue={movie.title}
+                                        onChange={(e) => setNewTitle(e.target.value)}
+                                    />
+                                    <input
+                                        type="text"
+                                        defaultValue={movie.review}
+                                        onChange={(e) => setNewReview(e.target.value)}
+                                    />
+                                    <input
+                                        type="number"
+                                        defaultValue={movie.rating}
+                                        onChange={(e) => setNewRating(e.target.value)}
+                                    />
+                                    <button onClick={() => editMovieWatched(movie.title)}>Save</button>
+                                    <button onClick={() => setEditingMovie(null)}>Cancel</button>
+                                </div>
+                            ) : (
+                                // Render movie details
+                                <div>
+                                    <h3>{movie.title}</h3>
+                                    <p>Review: {movie.review}</p>
+                                    <p>Rating: {movie.rating}</p>
+                                    <button onClick={() => deleteMovieWatched(movie.title)}>Delete</button>
+                                    <button onClick={() => setEditingMovie(movie.title)}>Edit</button>
+                                </div>
+                            )}
+                        </div>
+                    ))}
                     </div>
             
                 </div>
