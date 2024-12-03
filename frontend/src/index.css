@@ -179,7 +179,6 @@ button {
 #searchBar {
   border-radius: 30px;
   border: none;
-  position: absolute;
   top: 20px;    
   right: 120px;  /* Adjusted to make room for logout button */
   padding-left: 20px;
