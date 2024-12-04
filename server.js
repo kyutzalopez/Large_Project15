@@ -186,6 +186,7 @@ app.post('/api/addmovieWatched', async (req, res, next) => {
         }
         catch (e) {
             error = e.toString();
+            res.status(500).json({ error }); // Send an error response
         }
     });
   
